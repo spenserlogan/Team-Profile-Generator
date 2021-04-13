@@ -12,6 +12,8 @@ function initApp() {
 }
 
 function addMember() {
+    let teamInfo ="";
+
     inquirer.prompt([
     {
         type: "input",
@@ -31,7 +33,7 @@ function addMember() {
     {
         type: "input",
         message: "what is the team members office number?",
-        name: "office number"
+        name: "officeNumber"
     },
     {
         type: "list",
@@ -40,8 +42,8 @@ function addMember() {
         choices: ["Engineer", "Intern", "Manager"]
     },
     ])
-    .then(function({name1, id, email, role}){
-        let teamInfo = "";
+    .then(function({name1, id, email, officeNumber, role}){
+
         if(role === "Engineer"){
             teamInfo = "Github username";
         }else if(role === "Intern"){
@@ -49,40 +51,41 @@ function addMember() {
         }else{
             teamInfo = "office phone number";
         }
-    })
-    inquirer.prompt([
-        {
-            type: "input",
-            message: `Enter team members ${teamInfo}`,
-            name: "teamInfo"
-        },
-        {
-            type: "list",
-            Message: "would you like to add more members?",
-            name: "moreMembers",
-            choices: ["yes","no"]
-        },
-    ])
-    .then(function({teamInfo, moreMembers}){
-        let newMembers ="";
-        if(role === "Engineer"){
-            newMembers = new Engineer(name1, id, email, teamInfo);
-        }else if(role === "Intern"){
-            newMembers = new Intern(name1, id, email, teamInfo);
-        }else{
-            newMember = new Manager(name1, id, email,teamInfo);
-        }
-        employees.push(newMembers);
-        addHtml(newMembers)
-        .then(function () {
-            if(moreMembers === "yes") {
-                addMember();
-            }else {
-                finishHtml();
+    
+        inquirer.prompt([
+            {
+                type: "input",
+                message: `Enter team members ${teamInfo}`,
+                name: "teamInfo"
+            },
+            {
+                type: "list",
+                Message: "would you like to add more members?",
+                name: "moreMembers",
+                choices: ["yes","no"]
+            },
+        ])
+        .then(function({teamInfo, moreMembers}){
+            let newMembers ="";
+            if(role === "Engineer"){
+                newMembers = new Engineer(name1, id, email, teamInfo);
+            }else if(role === "Intern"){
+                newMembers = new Intern(name1, id, email, teamInfo);
+            }else{
+                newMember = new Manager(name1, id, email,teamInfo);
             }
+            employees.push(newMembers);
+            addHtml(newMembers)
+            .then(function () {
+                if(moreMembers === "yes") {
+                    addMember();
+                }else {
+                    finishHtml();
+                }
+            });
         });
-    });
-
+    })
+    
 }
 
 function startHtml(){
